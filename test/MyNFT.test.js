@@ -13,7 +13,7 @@ describe("My NFT", function () {
     const PUBLIC_SALE_PRICE = "0.02"
     const WHITELIST_SALE_PRICE = "0.01"
     const merkleRoot =
-        "0x5e603d0777fee9aa0211d439681398d4f022dbecc87a29540b97ff3ea35135bf"
+        "0x944fa178c04f1e9dc3d18b25e80571dc383c65c4786519f5474746fa6c4eac4e"
     const tokenUri = "ipfs://tokenUri"
     const placeholderTokenUri = "ipfs://placeholderTokenUri"
 
@@ -198,6 +198,23 @@ describe("My NFT", function () {
             await tx.wait(1)
             const getPlaceHolderTokenUri = await myNft.placeholderTokenUri()
             assert.equal(getPlaceHolderTokenUri, placeholderTokenUri)
+        })
+    })
+
+    describe("Get Token uri", async function () {
+        it("returns token uri of the specific token", async function () {
+            //Arrange
+            await myNft.toggleReveal()
+            await myNft.togglePublicSale()
+            await myNft.mint(nftQuantity, {
+                value: ethers.utils.parseEther(PUBLIC_SALE_PRICE),
+            })
+            const tx = await myNft.setTokenUri(tokenUri)
+            await tx.wait(1)
+            //Act
+            const tokenUriForId = await myNft.tokenURI("0")
+            //Assert
+            assert.equal(tokenUriForId, "ipfs://tokenUri1.json")
         })
     })
 
